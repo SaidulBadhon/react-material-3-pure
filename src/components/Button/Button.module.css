@@ -1,53 +1,208 @@
 .button {
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    gap: 8px;
+    /* Icon spacing */
+    box-sizing: border-box;
+    min-width: 64px;
+    height: 40px;
+    padding: 0 24px;
     border: none;
     outline: none;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
+    border-radius: var(--md-sys-shape-corner-full);
 
     /* Typography */
     font-family: var(--md-sys-typescale-body-large-font);
-    font-size: var(--md-sys-typescale-body-large-size);
-    line-height: var(--md-sys-typescale-body-large-line-height);
+    font-size: 14px;
+    /* M3 label-large */
+    line-height: 20px;
     font-weight: 500;
+    letter-spacing: 0.1px;
 
-    /* Sizing - M3 specs commonly 40px height */
-    height: 40px;
-    padding: 0 24px;
-    border-radius: var(--md-sys-shape-corner-full);
+    cursor: pointer;
+    overflow: hidden;
+    transition: box-shadow 0.2s cubic-bezier(0.2, 0, 0, 1), background-color 0.2s cubic-bezier(0.2, 0, 0, 1);
+    -webkit-tap-highlight-color: transparent;
+}
 
-    transition: all 0.2s ease-in-out;
+/* State Layer - Using ::before to separate opacity from content */
+.button::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: currentColor;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+    z-index: 0;
+    /* Behind content */
+}
+
+.button:hover::before {
+    opacity: var(--md-sys-state-hover-state-layer-opacity);
+}
+
+.button:focus-visible::before {
+    opacity: var(--md-sys-state-focus-state-layer-opacity);
+}
+
+.button:active::before {
+    opacity: var(--md-sys-state-pressed-state-layer-opacity);
 }
 
 .button:disabled {
     cursor: not-allowed;
-    opacity: 0.38;
+    box-shadow: none;
+    background-color: transparent;
 }
 
-/* Filled Variant */
+.button:disabled::before {
+    display: none;
+}
+
+/* Content wrapper to stay above state layer & ripples */
+.content {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* --- Variants --- */
+
+/* Filled */
 .filled {
     background-color: var(--md-sys-color-primary);
     color: var(--md-sys-color-on-primary);
 }
 
-.filled:hover:not(:disabled) {
+.filled:hover {
     box-shadow: var(--md-sys-elevation-level-1);
 }
 
-/* Outlined Variant */
+.filled:active {
+    box-shadow: none;
+}
+
+.filled:disabled {
+    background-color: rgba(28, 27, 31, 0.12);
+    /* on-surface 0.12 */
+    color: rgba(28, 27, 31, 0.38);
+    /* on-surface 0.38 */
+}
+
+/* Outlined */
 .outlined {
     background-color: transparent;
     color: var(--md-sys-color-primary);
-    border: 1px solid var(--md-sys-color-primary);
-    /* Use outline token in real app */
+    border: 1px solid var(--md-sys-color-outline);
 }
 
-/* Text Variant */
+/* Reduce padding by border width to keep same size */
+.outlined {
+    padding: 0 23px;
+}
+
+.outlined:disabled {
+    border-color: rgba(28, 27, 31, 0.12);
+    color: rgba(28, 27, 31, 0.38);
+}
+
+.outlined:focus {
+    border-color: var(--md-sys-color-primary);
+}
+
+/* Text */
 .text {
     background-color: transparent;
     color: var(--md-sys-color-primary);
     padding: 0 12px;
+    min-width: auto;
+}
+
+.text:disabled {
+    color: rgba(28, 27, 31, 0.38);
+}
+
+/* Elevated */
+.elevated {
+    background-color: var(--md-sys-color-surface-container-low);
+    color: var(--md-sys-color-primary);
+    box-shadow: var(--md-sys-elevation-level-1);
+}
+
+.elevated:hover {
+    box-shadow: var(--md-sys-elevation-level-2);
+}
+
+.elevated:active {
+    box-shadow: var(--md-sys-elevation-level-1);
+}
+
+.elevated:disabled {
+    background-color: rgba(28, 27, 31, 0.12);
+    color: rgba(28, 27, 31, 0.38);
+    box-shadow: none;
+}
+
+/* Tonal */
+.tonal {
+    background-color: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
+}
+
+.tonal:hover {
+    box-shadow: var(--md-sys-elevation-level-1);
+}
+
+.tonal:active {
+    box-shadow: none;
+}
+
+.tonal:disabled {
+    background-color: rgba(28, 27, 31, 0.12);
+    color: rgba(28, 27, 31, 0.38);
+}
+
+/* --- Ripple --- */
+.rippleContainer {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border-radius: inherit;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    background-color: currentColor;
+    opacity: 0.12;
+    /* pressed state opacity */
+    transform: scale(0);
+    animation: ripple-anim 600ms linear forwards;
+}
+
+@keyframes ripple-anim {
+    0% {
+        transform: scale(0);
+        opacity: 0.12;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 0;
+    }
+}
+
+/* Helper for icons */
+.icon {
+    display: inline-flex;
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
 }
