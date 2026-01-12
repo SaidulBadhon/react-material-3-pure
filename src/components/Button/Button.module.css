@@ -1,208 +1,327 @@
+/**
+ * Material Design 3 Button Styles
+ *
+ * Implements M3 "Common Buttons" specification with:
+ * - 5 visual variants (filled, outlined, text, elevated, tonal)
+ * - State Layer concept using ::before pseudo-element for state visualization
+ * - Elevation changes on interaction (filled, elevated, tonal variants)
+ * - Hardware-accelerated ripple effect animations
+ * - Capsule shape with full border-radius
+ * - Label Large typography
+ *
+ * Reference: https://m3.material.io/components/all-buttons
+ */
+
+/* ============================================================================
+   BASE BUTTON STYLES
+   ========================================================================== */
+
 .button {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    /* Icon spacing */
-    box-sizing: border-box;
-    min-width: 64px;
-    height: 40px;
-    padding: 0 24px;
-    border: none;
-    outline: none;
-    border-radius: var(--md-sys-shape-corner-full);
+  /* Layout & Sizing */
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-sizing: border-box;
+  min-width: 64px;
+  height: 40px;
+  padding: 0 24px;
 
-    /* Typography */
-    font-family: var(--md-sys-typescale-body-large-font);
-    font-size: 14px;
-    /* M3 label-large */
-    line-height: 20px;
-    font-weight: 500;
-    letter-spacing: 0.1px;
+  /* Appearance */
+  border: none;
+  outline: none;
+  border-radius: var(--md-sys-shape-corner-full);
 
-    cursor: pointer;
-    overflow: hidden;
-    transition: box-shadow 0.2s cubic-bezier(0.2, 0, 0, 1), background-color 0.2s cubic-bezier(0.2, 0, 0, 1);
-    -webkit-tap-highlight-color: transparent;
+  /* Typography: Label Large (M3 specification) */
+  font-family: var(--md-sys-typescale-label-large-font, 'Roboto', sans-serif);
+  font-size: var(--md-sys-typescale-label-large-size, 14px);
+  line-height: var(--md-sys-typescale-label-large-line-height, 20px);
+  font-weight: var(--md-sys-typescale-label-large-weight, 500);
+  letter-spacing: var(--md-sys-typescale-label-large-tracking, 0.1px);
+
+  /* Interaction */
+  cursor: pointer;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+
+  /* Transitions for elevation and background changes */
+  transition:
+    box-shadow var(--md-sys-transition-duration, 200ms) var(--md-sys-transition-easing, cubic-bezier(0.2, 0, 0, 1)),
+    background-color var(--md-sys-transition-duration, 200ms) var(--md-sys-transition-easing, cubic-bezier(0.2, 0, 0, 1));
 }
 
-/* State Layer - Using ::before to separate opacity from content */
+/**
+ * State Layer Implementation (M3 Specification)
+ *
+ * Instead of changing background-color on hover, M3 uses a semi-transparent
+ * overlay with specific opacities:
+ * - Hover: 8% opacity
+ * - Focus: 12% opacity
+ * - Pressed: 12% opacity
+ *
+ * This is achieved using a ::before pseudo-element that sits behind content.
+ */
 .button::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background-color: currentColor;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    pointer-events: none;
-    z-index: 0;
-    /* Behind content */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: currentColor;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: inherit;
+  transition: opacity var(--md-sys-transition-duration, 200ms) ease;
 }
 
+/* Hover state: Apply state layer opacity */
 .button:hover::before {
-    opacity: var(--md-sys-state-hover-state-layer-opacity);
+  opacity: var(--md-sys-state-hover-state-layer-opacity, 0.08);
 }
 
+/* Focus-visible state: Apply focus state layer opacity */
 .button:focus-visible::before {
-    opacity: var(--md-sys-state-focus-state-layer-opacity);
+  opacity: var(--md-sys-state-focus-state-layer-opacity, 0.12);
 }
 
+/* Pressed/Active state: Apply pressed state layer opacity */
 .button:active::before {
-    opacity: var(--md-sys-state-pressed-state-layer-opacity);
+  opacity: var(--md-sys-state-pressed-state-layer-opacity, 0.12);
 }
 
+/* Disabled state: Remove interactivity and visual feedback */
 .button:disabled {
-    cursor: not-allowed;
-    box-shadow: none;
-    background-color: transparent;
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
 .button:disabled::before {
-    display: none;
+  display: none;
 }
 
-/* Content wrapper to stay above state layer & ripples */
+/* Content wrapper: Ensures text/icons stay above state layer and ripples */
 .content {
-    position: relative;
-    z-index: 1;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
-/* --- Variants --- */
+/* Icon styling */
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  fill: currentColor;
+}
 
-/* Filled */
+/* ============================================================================
+   VARIANT: FILLED (Default)
+   ========================================================================== */
+
+/**
+ * Filled Button (M3 specification)
+ * - Background: Primary color
+ * - Text: On-primary color
+ * - Elevation: 0 at rest, Level 1 on hover, 0 on press
+ * - State layer uses on-primary color for contrast
+ */
 .filled {
-    background-color: var(--md-sys-color-primary);
-    color: var(--md-sys-color-on-primary);
+  background-color: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+}
+
+.filled::before {
+  background-color: var(--md-sys-color-on-primary);
 }
 
 .filled:hover {
-    box-shadow: var(--md-sys-elevation-level-1);
+  box-shadow: var(--md-sys-elevation-level-1);
 }
 
 .filled:active {
-    box-shadow: none;
+  box-shadow: none;
 }
 
 .filled:disabled {
-    background-color: rgba(28, 27, 31, 0.12);
-    /* on-surface 0.12 */
-    color: rgba(28, 27, 31, 0.38);
-    /* on-surface 0.38 */
+  background-color: rgba(28, 27, 31, 0.12); /* on-surface at 12% */
+  color: rgba(28, 27, 31, 0.38); /* on-surface at 38% */
 }
 
-/* Outlined */
+/* ============================================================================
+   VARIANT: OUTLINED
+   ========================================================================== */
+
+/**
+ * Outlined Button (M3 specification)
+ * - Background: Transparent
+ * - Border: 1px outline color
+ * - Text: Primary color
+ * - Elevation: 0
+ * - State layer uses primary color
+ */
 .outlined {
-    background-color: transparent;
-    color: var(--md-sys-color-primary);
-    border: 1px solid var(--md-sys-color-outline);
+  background-color: transparent;
+  color: var(--md-sys-color-primary);
+  border: 1px solid var(--md-sys-color-outline);
+  padding: 0 23px; /* Reduce padding by border width to maintain size */
 }
 
-/* Reduce padding by border width to keep same size */
-.outlined {
-    padding: 0 23px;
+.outlined::before {
+  background-color: var(--md-sys-color-primary);
+}
+
+.outlined:focus-visible {
+  border-color: var(--md-sys-color-primary);
 }
 
 .outlined:disabled {
-    border-color: rgba(28, 27, 31, 0.12);
-    color: rgba(28, 27, 31, 0.38);
+  border-color: rgba(28, 27, 31, 0.12); /* on-surface at 12% */
+  color: rgba(28, 27, 31, 0.38); /* on-surface at 38% */
 }
 
-.outlined:focus {
-    border-color: var(--md-sys-color-primary);
-}
+/* ============================================================================
+   VARIANT: TEXT
+   ========================================================================== */
 
-/* Text */
+/**
+ * Text Button (M3 specification)
+ * - Background: Transparent
+ * - Border: None
+ * - Text: Primary color
+ * - Elevation: 0
+ * - State layer uses primary color
+ * - Reduced padding for compact appearance
+ */
 .text {
-    background-color: transparent;
-    color: var(--md-sys-color-primary);
-    padding: 0 12px;
-    min-width: auto;
+  background-color: transparent;
+  color: var(--md-sys-color-primary);
+  padding: 0 12px;
+  min-width: auto;
+}
+
+.text::before {
+  background-color: var(--md-sys-color-primary);
 }
 
 .text:disabled {
-    color: rgba(28, 27, 31, 0.38);
+  color: rgba(28, 27, 31, 0.38); /* on-surface at 38% */
 }
 
-/* Elevated */
+/* ============================================================================
+   VARIANT: ELEVATED
+   ========================================================================== */
+
+/**
+ * Elevated Button (M3 specification)
+ * - Background: Surface container low
+ * - Text: Primary color
+ * - Elevation: Level 1 at rest, Level 2 on hover, Level 1 on press
+ * - State layer uses primary color
+ */
 .elevated {
-    background-color: var(--md-sys-color-surface-container-low);
-    color: var(--md-sys-color-primary);
-    box-shadow: var(--md-sys-elevation-level-1);
+  background-color: var(--md-sys-color-surface-container-low);
+  color: var(--md-sys-color-primary);
+  box-shadow: var(--md-sys-elevation-level-1);
+}
+
+.elevated::before {
+  background-color: var(--md-sys-color-primary);
 }
 
 .elevated:hover {
-    box-shadow: var(--md-sys-elevation-level-2);
+  box-shadow: var(--md-sys-elevation-level-2);
 }
 
 .elevated:active {
-    box-shadow: var(--md-sys-elevation-level-1);
+  box-shadow: var(--md-sys-elevation-level-1);
 }
 
 .elevated:disabled {
-    background-color: rgba(28, 27, 31, 0.12);
-    color: rgba(28, 27, 31, 0.38);
-    box-shadow: none;
+  background-color: rgba(28, 27, 31, 0.12); /* on-surface at 12% */
+  color: rgba(28, 27, 31, 0.38); /* on-surface at 38% */
+  box-shadow: none;
 }
 
-/* Tonal */
+/* ============================================================================
+   VARIANT: TONAL
+   ========================================================================== */
+
+/**
+ * Tonal Button (M3 specification)
+ * - Background: Secondary container
+ * - Text: On-secondary container
+ * - Elevation: 0 at rest, Level 1 on hover, 0 on press
+ * - State layer uses on-secondary-container color
+ */
 .tonal {
-    background-color: var(--md-sys-color-secondary-container);
-    color: var(--md-sys-color-on-secondary-container);
+  background-color: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-on-secondary-container);
+}
+
+.tonal::before {
+  background-color: var(--md-sys-color-on-secondary-container);
 }
 
 .tonal:hover {
-    box-shadow: var(--md-sys-elevation-level-1);
+  box-shadow: var(--md-sys-elevation-level-1);
 }
 
 .tonal:active {
-    box-shadow: none;
+  box-shadow: none;
 }
 
 .tonal:disabled {
-    background-color: rgba(28, 27, 31, 0.12);
-    color: rgba(28, 27, 31, 0.38);
+  background-color: rgba(28, 27, 31, 0.12); /* on-surface at 12% */
+  color: rgba(28, 27, 31, 0.38); /* on-surface at 38% */
 }
 
-/* --- Ripple --- */
+/* ============================================================================
+   RIPPLE EFFECT CONTAINER
+   ========================================================================== */
+
+/**
+ * Ripple Effect (M3 specification)
+ *
+ * Hardware-accelerated ink ripple that:
+ * - Originates from click coordinates
+ * - Uses currentColor for theme consistency
+ * - Animates from scale(0) to scale(1) with opacity fade
+ * - Duration: 600ms with linear timing
+ */
 .rippleContainer {
-    position: absolute;
-    inset: 0;
-    overflow: hidden;
-    border-radius: inherit;
-    z-index: 0;
-    pointer-events: none;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  z-index: 1;
+  pointer-events: none;
 }
 
 .ripple {
-    position: absolute;
-    border-radius: 50%;
-    background-color: currentColor;
-    opacity: 0.12;
-    /* pressed state opacity */
-    transform: scale(0);
-    animation: ripple-anim 600ms linear forwards;
+  position: absolute;
+  border-radius: 50%;
+  background-color: currentColor;
+  opacity: 0.12; /* Pressed state opacity as starting point */
+  transform: scale(0);
+  animation: ripple-anim 600ms linear forwards;
+  will-change: transform, opacity; /* GPU acceleration hint */
 }
 
 @keyframes ripple-anim {
-    0% {
-        transform: scale(0);
-        opacity: 0.12;
-    }
+  0% {
+    transform: scale(0);
+    opacity: 0.12;
+  }
 
-    100% {
-        transform: scale(1);
-        opacity: 0;
-    }
-}
-
-/* Helper for icons */
-.icon {
-    display: inline-flex;
-    width: 18px;
-    height: 18px;
-    fill: currentColor;
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
 }
