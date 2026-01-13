@@ -1,0 +1,44 @@
+// Fab.module.css
+.fab {
+  /* Base FAB button */
+}
+
+.primary {
+  /* Primary variant */
+}
+
+.secondary {
+  /* Secondary variant */
+}
+
+.tertiary {
+  /* Tertiary variant */
+}
+
+.lowered {
+  /* Lowered elevation */
+}
+
+.small {
+  /* Small size */
+}
+
+.large {
+  /* Large size */
+}
+
+.extended {
+  /* Extended FAB with label */
+}
+
+.touchTarget {
+  /* Expanded touch target */
+}
+
+.icon {
+  /* Icon container */
+}
+
+.label {
+  /* Label text */
+}

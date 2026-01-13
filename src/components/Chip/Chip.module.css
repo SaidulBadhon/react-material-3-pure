@@ -1,0 +1,56 @@
+// Chip.module.css
+.container {
+  /* Base chip container */
+}
+
+.disabled {
+  /* Disabled state */
+}
+
+.hasIcon {
+  /* Chip with icon */
+}
+
+.elevated {
+  /* Elevated variant */
+}
+
+.link {
+  /* Link chip variant */
+}
+
+.outline {
+  /* Chip outline */
+}
+
+.elevation {
+  /* Elevation for elevated chips */
+}
+
+.primary {
+  /* Primary action element */
+}
+
+.action {
+  /* Action element */
+}
+
+.leading {
+  /* Leading element */
+}
+
+.icon {
+  /* Icon container */
+}
+
+.label {
+  /* Label container */
+}
+
+.labelText {
+  /* Label text */
+}
+
+.touch {
+  /* Touch target */
+}

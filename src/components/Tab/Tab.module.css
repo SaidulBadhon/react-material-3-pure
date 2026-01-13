@@ -1,0 +1,32 @@
+// Tab.module.css
+.tab {
+  /* Base tab button */
+}
+
+.button {
+  /* Button wrapper */
+}
+
+.content {
+  /* Content container */
+}
+
+.hasIcon {
+  /* Tab with icon */
+}
+
+.hasLabel {
+  /* Tab with label */
+}
+
+.iconSlot {
+  /* Icon slot */
+}
+
+.labelSlot {
+  /* Label slot */
+}
+
+.indicator {
+  /* Active indicator */
+}

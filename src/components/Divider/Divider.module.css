@@ -1,0 +1,16 @@
+// Divider.module.css
+.root {
+  /* Base divider styles */
+}
+
+.inset {
+  /* Inset on both sides */
+}
+
+.insetStart {
+  /* Inset on leading side */
+}
+
+.insetEnd {
+  /* Inset on trailing side */
+}

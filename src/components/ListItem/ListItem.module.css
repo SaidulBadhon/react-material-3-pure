@@ -1,0 +1,20 @@
+// ListItem.module.css
+.listItem {
+  /* Base list item */
+}
+
+.container {
+  /* Item container */
+}
+
+.start {
+  /* Start slot */
+}
+
+.body {
+  /* Body content */
+}
+
+.end {
+  /* End slot */
+}
