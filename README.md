@@ -11,7 +11,39 @@ A production-ready, pixel-perfect implementation of Google's **Material Design 3
 [![Storybook](https://img.shields.io/badge/Storybook-10-ff4785.svg)](https://storybook.js.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)]()
 
+## 🗺️ Roadmap
+
+- [ ] Fix Flotaing Label (TextField)
+
 ## ✨ Features
+
+### Planned Components
+
+- [ ] Select (dropdown)
+- [ ] Menu
+- [ ] List
+- [ ] Radio
+- [ ] Switch
+- [ ] Slider
+- [ ] Progress (linear/circular)
+- [ ] Tabs
+- [ ] IconButton
+- [ ] Fab (Floating Action Button)
+- [ ] Snackbar
+- [ ] Tooltip
+- [ ] Card
+- [ ] Avatar
+- [ ] Badge
+- [ ] DatePicker / TimePicker
+- [ ] Stepper
+- [ ] AppBar / TopBar
+- [ ] Navigation Drawer
+- [ ] Bottom Navigation
+- [ ] Skeleton
+- [ ] Table
+- [ ] Pagination
+- [ ] Upload / Dropzone
+- [ ] Labs (experimental)
 
 - 🎨 **Pixel-perfect M3 implementation** — Follows the official [Material Design 3 specification](https://m3.material.io/)
 - 🚫 **Zero dependencies** — Pure React + CSS Modules, no external UI libraries
