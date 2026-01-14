@@ -53,6 +53,50 @@ const COMPONENTS_REGISTRY: Record<string, ComponentDefinition> = {
     hooks: ['useRipple'],
     styles: ['theme'],
   },
+  checkbox: {
+    name: 'Checkbox',
+    description: 'M3 Checkbox with checked, unchecked, and indeterminate states',
+    files: [
+      { source: 'components/Checkbox/Checkbox.tsx', target: 'components/ui/checkbox.tsx' },
+      { source: 'components/Checkbox/Checkbox.module.css', target: 'components/ui/checkbox.module.css' },
+    ],
+    dependencies: [],
+    hooks: ['useRipple'],
+    styles: ['theme'],
+  },
+  chip: {
+    name: 'Chip',
+    description: 'M3 Chips (AssistChip, FilterChip, InputChip, SuggestionChip, ChipSet)',
+    files: [
+      { source: 'components/Chip/Chip.tsx', target: 'components/ui/chip.tsx' },
+      { source: 'components/Chip/Chip.module.css', target: 'components/ui/chip.module.css' },
+    ],
+    dependencies: [],
+    hooks: ['useRipple'],
+    styles: ['theme'],
+  },
+  dialog: {
+    name: 'Dialog',
+    description: 'M3 Dialog with modal behavior, focus trapping, and animations',
+    files: [
+      { source: 'components/Dialog/Dialog.tsx', target: 'components/ui/dialog.tsx' },
+      { source: 'components/Dialog/Dialog.module.css', target: 'components/ui/dialog.module.css' },
+    ],
+    dependencies: [],
+    hooks: [],
+    styles: ['theme'],
+  },
+  divider: {
+    name: 'Divider',
+    description: 'M3 Divider with inset variants for lists and containers',
+    files: [
+      { source: 'components/Divider/Divider.tsx', target: 'components/ui/divider.tsx' },
+      { source: 'components/Divider/Divider.module.css', target: 'components/ui/divider.module.css' },
+    ],
+    dependencies: [],
+    hooks: [],
+    styles: ['theme'],
+  },
 };
 
 const HOOKS_REGISTRY: Record<string, { source: string; target: string }> = {

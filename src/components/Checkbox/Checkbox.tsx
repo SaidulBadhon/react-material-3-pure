@@ -1,4 +1,6 @@
-import React, {
+'use client';
+
+import {
   forwardRef,
   useCallback,
   useRef,
@@ -6,6 +8,8 @@ import React, {
   useMemo,
   useState,
   useId,
+  useLayoutEffect,
+  useEffect,
 } from 'react';
 import styles from './Checkbox.module.css';
 import { useRipple } from '../../hooks';
@@ -157,7 +161,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
     });
 
     // Update previous states BEFORE the next render cycle
-    React.useLayoutEffect(() => {
+    useLayoutEffect(() => {
       // Store current as previous for next change
       const timeoutId = setTimeout(() => {
         prevCheckedRef.current = checked;
@@ -174,7 +178,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
     }, [checked, indeterminate, disabled]);
 
     // Set indeterminate property on input (can't be set via attribute)
-    React.useEffect(() => {
+    useEffect(() => {
       if (inputRef.current) {
         inputRef.current.indeterminate = indeterminate;
       }
@@ -184,7 +188,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
     useImperativeHandle(ref, () => inputRef.current as HTMLInputElement);
 
     // Ripple hook
-    const { state: rippleState, handlers: rippleHandlers, surfaceRef } = useRipple(disabled);
+    const { state: rippleState, handlers: rippleHandlers, surfaceRef } = useRipple<HTMLDivElement>(disabled);
 
     // Handle input change
     const handleChange = useCallback(

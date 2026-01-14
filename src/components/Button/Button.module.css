@@ -1,558 +1,308 @@
 /**
- * @license
- * Copyright 2021 Google LLC
- * SPDX-License-Identifier: Apache-2.0
- */
-
-/**
  * Material Design 3 Button Styles
  *
- * Ported from @material/web button component.
- * @see https://github.com/material-components/material-web/tree/main/button
- *
- * Uses CSS custom properties matching the Material Web token structure.
+ * Complete M3 button with ripple, state layers, and all variants.
  */
 
 /* ==========================================================================
-   HOST (Container) - Equivalent to :host in Web Components
-   ========================================================================== */
-
-.host {
-  /* Shape tokens - using logical properties for RTL support */
-  --_container-shape-start-start: var(--md-filled-button-container-shape-start-start, var(--md-filled-button-container-shape, var(--md-sys-shape-corner-full, 9999px)));
-  --_container-shape-start-end: var(--md-filled-button-container-shape-start-end, var(--md-filled-button-container-shape, var(--md-sys-shape-corner-full, 9999px)));
-  --_container-shape-end-start: var(--md-filled-button-container-shape-end-start, var(--md-filled-button-container-shape, var(--md-sys-shape-corner-full, 9999px)));
-  --_container-shape-end-end: var(--md-filled-button-container-shape-end-end, var(--md-filled-button-container-shape, var(--md-sys-shape-corner-full, 9999px)));
-
-  /* Container tokens */
-  --_container-height: 40px;
-  --_container-color: var(--md-sys-color-primary, #6750a4);
-
-  /* Label text tokens */
-  --_label-text-color: var(--md-sys-color-on-primary, #fff);
-  --_label-text-font: var(--md-sys-typescale-label-large-font, Roboto, sans-serif);
-  --_label-text-size: var(--md-sys-typescale-label-large-size, 0.875rem);
-  --_label-text-line-height: var(--md-sys-typescale-label-large-line-height, 1.25rem);
-  --_label-text-weight: var(--md-sys-typescale-label-large-weight, 500);
-
-  /* Icon tokens */
-  --_icon-size: 18px;
-  --_icon-color: var(--_label-text-color);
-
-  /* Spacing tokens */
-  --_leading-space: 24px;
-  --_trailing-space: 24px;
-  --_with-leading-icon-leading-space: 16px;
-  --_with-leading-icon-trailing-space: 24px;
-  --_with-trailing-icon-leading-space: 24px;
-  --_with-trailing-icon-trailing-space: 16px;
-
-  /* State layer tokens */
-  --_hover-state-layer-color: var(--md-sys-color-on-primary, #fff);
-  --_hover-state-layer-opacity: 0.08;
-  --_pressed-state-layer-color: var(--md-sys-color-on-primary, #fff);
-  --_pressed-state-layer-opacity: 0.12;
-
-  /* Hover/Focus/Pressed label colors */
-  --_hover-label-text-color: var(--_label-text-color);
-  --_focus-label-text-color: var(--_label-text-color);
-  --_pressed-label-text-color: var(--_label-text-color);
-
-  /* Hover/Focus/Pressed icon colors */
-  --_hover-icon-color: var(--_icon-color);
-  --_focus-icon-color: var(--_icon-color);
-  --_pressed-icon-color: var(--_icon-color);
-
-  /* Disabled tokens */
-  --_disabled-container-color: var(--md-sys-color-on-surface, #1d1b20);
-  --_disabled-container-opacity: 0.12;
-  --_disabled-label-text-color: var(--md-sys-color-on-surface, #1d1b20);
-  --_disabled-label-text-opacity: 0.38;
-  --_disabled-icon-color: var(--md-sys-color-on-surface, #1d1b20);
-  --_disabled-icon-opacity: 0.38;
-
-  /* Outline tokens (for outlined variant) */
-  --_outline-color: var(--md-sys-color-outline, #79747e);
-  --_outline-width: 1px;
-
-  /* Border radius using logical properties */
-  border-start-start-radius: var(--_container-shape-start-start);
-  border-start-end-radius: var(--_container-shape-start-end);
-  border-end-start-radius: var(--_container-shape-end-start);
-  border-end-end-radius: var(--_container-shape-end-end);
-
-  /* Box model */
-  box-sizing: border-box;
-  cursor: pointer;
-  display: inline-flex;
-  gap: 8px;
-  min-height: var(--_container-height);
-  outline: none;
-
-  /* Padding with block padding for wrapped text */
-  padding-block: calc((var(--_container-height) - max(var(--_label-text-line-height), var(--_icon-size))) / 2);
-  padding-inline-start: var(--_leading-space);
-  padding-inline-end: var(--_trailing-space);
-
-  /* Alignment */
-  place-content: center;
-  place-items: center;
-  position: relative;
-
-  /* Typography */
-  font-family: var(--_label-text-font);
-  font-size: var(--_label-text-size);
-  line-height: var(--_label-text-line-height);
-  font-weight: var(--_label-text-weight);
-  text-overflow: ellipsis;
-  text-wrap: nowrap;
-  user-select: none;
-  -webkit-tap-highlight-color: transparent;
-  vertical-align: top;
-}
-
-.host:is(.disabled, .softDisabled) {
-  cursor: default;
-  pointer-events: none;
-}
-
-.host.hasLeadingIcon {
-  padding-inline-start: var(--_with-leading-icon-leading-space);
-  padding-inline-end: var(--_with-leading-icon-trailing-space);
-}
-
-.host.hasTrailingIcon {
-  padding-inline-start: var(--_with-trailing-icon-leading-space);
-  padding-inline-end: var(--_with-trailing-icon-trailing-space);
-}
-
-/* ==========================================================================
-   BUTTON / LINK ELEMENT
+   BASE BUTTON
    ========================================================================== */
 
 .button {
-  border-radius: inherit;
-  cursor: inherit;
+  /* Reset */
+  appearance: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font: inherit;
+  margin: 0;
+  outline: none;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  
+  /* Layout */
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: none;
-  outline: none;
-  -webkit-appearance: none;
-  appearance: none;
-  vertical-align: middle;
-  background: transparent;
-  text-decoration: none;
-  min-width: calc(64px - var(--_leading-space) - var(--_trailing-space));
-  width: 100%;
-  z-index: 0;
-  height: 100%;
-  font: inherit;
-  color: var(--_label-text-color);
-  padding: 0;
-  gap: inherit;
-  text-transform: inherit;
-}
-
-.button::-moz-focus-inner {
-  padding: 0;
-  border: 0;
-}
-
-.host:hover .button {
-  color: var(--_hover-label-text-color);
-}
-
-.host:focus-within .button {
-  color: var(--_focus-label-text-color);
-}
-
-.host:active .button {
-  color: var(--_pressed-label-text-color);
-}
-
-/* ==========================================================================
-   BACKGROUND
-   ========================================================================== */
-
-.background {
-  background: var(--_container-color);
-  border-radius: inherit;
-  inset: 0;
-  position: absolute;
-  z-index: -1;
-}
-
-.host:is(.disabled, .softDisabled) .background {
-  background: var(--_disabled-container-color);
-  opacity: var(--_disabled-container-opacity);
-}
-
-@media (forced-colors: active) {
-  .background {
-    border: 1px solid CanvasText;
-  }
-
-  .host:is(.disabled, .softDisabled) {
-    --_disabled-icon-color: GrayText;
-    --_disabled-icon-opacity: 1;
-    --_disabled-container-opacity: 1;
-    --_disabled-label-text-color: GrayText;
-    --_disabled-label-text-opacity: 1;
-  }
-}
-
-/* ==========================================================================
-   LABEL
-   ========================================================================== */
-
-.label {
   overflow: hidden;
-  text-overflow: inherit;
+  
+  /* Typography */
+  font-family: var(--md-sys-typescale-label-large-font, Roboto, sans-serif);
+  font-size: var(--md-sys-typescale-label-large-size, 0.875rem);
+  font-weight: var(--md-sys-typescale-label-large-weight, 500);
+  line-height: var(--md-sys-typescale-label-large-line-height, 1.25rem);
+  letter-spacing: var(--md-sys-typescale-label-large-tracking, 0.1px);
+  
+  /* Sizing */
+  height: 40px;
+  padding: 0 24px;
+  border-radius: var(--md-sys-shape-corner-full, 9999px);
+  
+  /* Transitions */
+  transition: 
+    background-color 200ms cubic-bezier(0.2, 0, 0, 1),
+    box-shadow 200ms cubic-bezier(0.2, 0, 0, 1),
+    border-color 200ms cubic-bezier(0.2, 0, 0, 1);
 }
 
-.host:is(.disabled, .softDisabled) .label {
-  color: var(--_disabled-label-text-color);
-  opacity: var(--_disabled-label-text-opacity);
+.button:focus-visible {
+  outline: 2px solid var(--md-sys-color-primary, #6750a4);
+  outline-offset: 2px;
 }
 
 /* ==========================================================================
-   ICON SLOT
+   CONTENT LAYOUT
    ========================================================================== */
 
-.iconSlot {
+.content {
   display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   position: relative;
-  writing-mode: horizontal-tb;
-  fill: currentColor;
-  flex-shrink: 0;
-  color: var(--_icon-color);
-  font-size: var(--_icon-size);
-  inline-size: var(--_icon-size);
-  block-size: var(--_icon-size);
-}
-
-.iconSlot > * {
-  width: 100%;
-  height: 100%;
-}
-
-.host:hover .iconSlot {
-  color: var(--_hover-icon-color);
-}
-
-.host:focus-within .iconSlot {
-  color: var(--_focus-icon-color);
-}
-
-.host:active .iconSlot {
-  color: var(--_pressed-icon-color);
-}
-
-.host:is(.disabled, .softDisabled) .iconSlot {
-  color: var(--_disabled-icon-color);
-  opacity: var(--_disabled-icon-opacity);
-}
-
-/* ==========================================================================
-   TOUCH TARGET
-   ========================================================================== */
-
-.touch {
-  position: absolute;
-  top: 50%;
-  height: 48px;
-  left: 0;
-  right: 0;
-  transform: translateY(-50%);
-}
-
-/* ==========================================================================
-   FOCUS RING
-   ========================================================================== */
-
-.focusRing {
-  --md-focus-ring-active-width: 8px;
-  --md-focus-ring-color: var(--md-sys-color-secondary, #625b71);
-  --md-focus-ring-duration: 600ms;
-  --md-focus-ring-width: 3px;
-  --md-focus-ring-outward-offset: 2px;
-  
-  animation-delay: 0s, calc(var(--md-focus-ring-duration) * 0.25);
-  animation-duration: calc(var(--md-focus-ring-duration) * 0.25), calc(var(--md-focus-ring-duration) * 0.75);
-  animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
-  box-sizing: border-box;
-  color: var(--md-focus-ring-color);
-  display: none;
-  pointer-events: none;
-  position: absolute;
   z-index: 1;
-  
-  animation-name: outward-grow, outward-shrink;
-  border-end-end-radius: calc(var(--_container-shape-end-end) + var(--md-focus-ring-outward-offset));
-  border-end-start-radius: calc(var(--_container-shape-end-start) + var(--md-focus-ring-outward-offset));
-  border-start-end-radius: calc(var(--_container-shape-start-end) + var(--md-focus-ring-outward-offset));
-  border-start-start-radius: calc(var(--_container-shape-start-start) + var(--md-focus-ring-outward-offset));
-  inset: calc(-1 * var(--md-focus-ring-outward-offset));
-  outline: var(--md-focus-ring-width) solid currentColor;
-}
-
-.host:has(:focus-visible) .focusRing {
-  display: flex;
-}
-
-@keyframes outward-grow {
-  from {
-    outline-width: 0;
-  }
-  to {
-    outline-width: var(--md-focus-ring-active-width);
-  }
-}
-
-@keyframes outward-shrink {
-  from {
-    outline-width: var(--md-focus-ring-active-width);
-  }
-}
-
-/* ==========================================================================
-   RIPPLE SURFACE
-   ========================================================================== */
-
-.surface {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
+  white-space: nowrap;
   overflow: hidden;
-  z-index: -1;
-  pointer-events: none;
-  -webkit-tap-highlight-color: transparent;
+  text-overflow: ellipsis;
 }
 
-.surface::before {
-  content: '';
-  opacity: 0;
-  position: absolute;
-  background-color: var(--_hover-state-layer-color);
-  inset: 0;
-  transition: opacity 15ms linear, background-color 15ms linear;
-}
-
-.surface::after {
-  content: '';
-  opacity: 0;
-  position: absolute;
-  background: radial-gradient(
-    closest-side,
-    var(--_pressed-state-layer-color) max(calc(100% - 70px), 65%),
-    transparent 100%
-  );
-  transform-origin: center center;
-  transition: opacity 375ms linear;
-}
-
-.surface.hovered::before {
-  background-color: var(--_hover-state-layer-color);
-  opacity: var(--_hover-state-layer-opacity);
-}
-
-.surface.pressed::after {
-  opacity: var(--_pressed-state-layer-opacity);
-  transition-duration: 105ms;
-}
-
-.host:is(.disabled, .softDisabled) .surface {
-  display: none;
+/* Icon styling within content */
+.content > svg,
+.content > [data-icon] {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  fill: currentColor;
 }
 
 /* ==========================================================================
-   ELEVATION
+   STATE LAYER
    ========================================================================== */
 
-.elevation {
+.stateLayer {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  z-index: -2;
-  pointer-events: none;
-  transition: box-shadow 280ms cubic-bezier(0.2, 0, 0, 1);
-}
-
-.host:is(.disabled, .softDisabled) .elevation {
-  transition: none;
-  box-shadow: none;
-}
-
-/* Elevation shadows */
-.filled .elevation,
-.tonal .elevation {
-  box-shadow: none;
-}
-
-.elevated .elevation {
-  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
-}
-
-.elevated:hover .elevation {
-  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.3), 0px 2px 6px 2px rgba(0, 0, 0, 0.15);
-}
-
-.elevated:active .elevation {
-  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
-}
-
-/* ==========================================================================
-   OUTLINE (for outlined variant)
-   ========================================================================== */
-
-.outline {
-  inset: 0;
-  border-style: solid;
-  position: absolute;
-  box-sizing: border-box;
-  border-color: var(--_outline-color);
-  border-width: var(--_outline-width);
-  border-start-start-radius: var(--_container-shape-start-start);
-  border-start-end-radius: var(--_container-shape-start-end);
-  border-end-start-radius: var(--_container-shape-end-start);
-  border-end-end-radius: var(--_container-shape-end-end);
-  z-index: -1;
+  opacity: 0;
+  transition: opacity 200ms cubic-bezier(0.2, 0, 0, 1);
   pointer-events: none;
 }
 
-.host:hover .outline {
-  border-color: var(--_hover-outline-color, var(--_outline-color));
+.button:hover .stateLayer {
+  opacity: 0.08;
 }
 
-.host:active .outline {
-  border-color: var(--_pressed-outline-color, var(--_outline-color));
-}
-
-.host:is(.disabled, .softDisabled) .outline {
-  border-color: var(--_disabled-outline-color, var(--md-sys-color-on-surface, #1d1b20));
+.button:focus-visible .stateLayer {
   opacity: 0.12;
 }
 
-@media (forced-colors: active) {
-  .outline {
-    border-color: CanvasText;
-  }
-
-  .host:is(.disabled, .softDisabled) .outline {
-    border-color: GrayText;
-    opacity: 1;
-  }
+.pressed .stateLayer,
+.button:active .stateLayer {
+  opacity: 0.12;
 }
 
 /* ==========================================================================
-   VARIANT STYLES
+   RIPPLE
    ========================================================================== */
 
-/* Filled Button (Primary Action) */
+.ripple {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(circle, white 100%, black 100%);
+  mask-image: radial-gradient(circle, white 100%, black 100%);
+}
+
+/* ==========================================================================
+   SIZES
+   ========================================================================== */
+
+.sm {
+  height: 32px;
+  padding: 0 16px;
+  font-size: 0.8125rem;
+}
+
+.md {
+  height: 40px;
+  padding: 0 24px;
+}
+
+.lg {
+  height: 48px;
+  padding: 0 32px;
+  font-size: 1rem;
+}
+
+.icon {
+  height: 40px;
+  width: 40px;
+  padding: 0;
+  border-radius: var(--md-sys-shape-corner-full, 9999px);
+}
+
+.icon .content {
+  gap: 0;
+}
+
+/* ==========================================================================
+   FILLED VARIANT
+   ========================================================================== */
+
 .filled {
-  --_container-color: var(--md-filled-button-container-color, var(--md-sys-color-primary, #6750a4));
-  --_label-text-color: var(--md-filled-button-label-text-color, var(--md-sys-color-on-primary, #ffffff));
-  --_hover-label-text-color: var(--md-filled-button-hover-label-text-color, var(--md-sys-color-on-primary, #ffffff));
-  --_focus-label-text-color: var(--md-filled-button-focus-label-text-color, var(--md-sys-color-on-primary, #ffffff));
-  --_pressed-label-text-color: var(--md-filled-button-pressed-label-text-color, var(--md-sys-color-on-primary, #ffffff));
-  --_hover-state-layer-color: var(--md-filled-button-hover-state-layer-color, var(--md-sys-color-on-primary, #ffffff));
-  --_pressed-state-layer-color: var(--md-filled-button-pressed-state-layer-color, var(--md-sys-color-on-primary, #ffffff));
-  --_disabled-container-color: var(--md-filled-button-disabled-container-color, var(--md-sys-color-on-surface, #1c1b1f));
-  --_disabled-label-text-color: var(--md-filled-button-disabled-label-text-color, var(--md-sys-color-on-surface, #1c1b1f));
-  --_icon-color: var(--md-filled-button-icon-color, var(--md-sys-color-on-primary, #ffffff));
-  --_hover-icon-color: var(--md-filled-button-hover-icon-color, var(--md-sys-color-on-primary, #ffffff));
-  --_focus-icon-color: var(--md-filled-button-focus-icon-color, var(--md-sys-color-on-primary, #ffffff));
-  --_pressed-icon-color: var(--md-filled-button-pressed-icon-color, var(--md-sys-color-on-primary, #ffffff));
-  --_disabled-icon-color: var(--md-filled-button-disabled-icon-color, var(--md-sys-color-on-surface, #1c1b1f));
+  background-color: var(--md-sys-color-primary, #6750a4);
+  color: var(--md-sys-color-on-primary, #ffffff);
 }
 
-/* Outlined Button (Secondary Action) */
+.filled .stateLayer {
+  background-color: var(--md-sys-color-on-primary, #ffffff);
+}
+
+.filled:hover {
+  box-shadow: var(--md-sys-elevation-1, 
+    0 1px 3px 1px rgba(0,0,0,0.15), 
+    0 1px 2px rgba(0,0,0,0.3));
+}
+
+/* ==========================================================================
+   OUTLINED VARIANT
+   ========================================================================== */
+
 .outlined {
-  --_container-color: transparent;
-  --_label-text-color: var(--md-outlined-button-label-text-color, var(--md-sys-color-primary, #6750a4));
-  --_hover-label-text-color: var(--md-outlined-button-hover-label-text-color, var(--md-sys-color-primary, #6750a4));
-  --_focus-label-text-color: var(--md-outlined-button-focus-label-text-color, var(--md-sys-color-primary, #6750a4));
-  --_pressed-label-text-color: var(--md-outlined-button-pressed-label-text-color, var(--md-sys-color-primary, #6750a4));
-  --_hover-state-layer-color: var(--md-outlined-button-hover-state-layer-color, var(--md-sys-color-primary, #6750a4));
-  --_pressed-state-layer-color: var(--md-outlined-button-pressed-state-layer-color, var(--md-sys-color-primary, #6750a4));
-  --_outline-color: var(--md-outlined-button-outline-color, var(--md-sys-color-outline, #79747e));
-  --_hover-outline-color: var(--md-outlined-button-hover-outline-color, var(--md-sys-color-outline, #79747e));
-  --_pressed-outline-color: var(--md-outlined-button-pressed-outline-color, var(--md-sys-color-outline, #79747e));
-  --_disabled-label-text-color: var(--md-outlined-button-disabled-label-text-color, var(--md-sys-color-on-surface, #1c1b1f));
-  --_disabled-outline-color: var(--md-outlined-button-disabled-outline-color, var(--md-sys-color-on-surface, #1c1b1f));
-  --_icon-color: var(--md-outlined-button-icon-color, var(--md-sys-color-primary, #6750a4));
-  --_hover-icon-color: var(--md-outlined-button-hover-icon-color, var(--md-sys-color-primary, #6750a4));
-  --_focus-icon-color: var(--md-outlined-button-focus-icon-color, var(--md-sys-color-primary, #6750a4));
-  --_pressed-icon-color: var(--md-outlined-button-pressed-icon-color, var(--md-sys-color-primary, #6750a4));
-  --_disabled-icon-color: var(--md-outlined-button-disabled-icon-color, var(--md-sys-color-on-surface, #1c1b1f));
+  background-color: transparent;
+  color: var(--md-sys-color-primary, #6750a4);
+  border: 1px solid var(--md-sys-color-outline, #79747e);
 }
 
-.outlined .background {
-  background: transparent;
+.outlined .stateLayer {
+  background-color: var(--md-sys-color-primary, #6750a4);
 }
 
-/* Text Button (Tertiary Action) */
+/* ==========================================================================
+   TEXT VARIANT
+   ========================================================================== */
+
 .text {
-  --_container-color: transparent;
-  --_label-text-color: var(--md-text-button-label-text-color, var(--md-sys-color-primary, #6750a4));
-  --_hover-label-text-color: var(--md-text-button-hover-label-text-color, var(--md-sys-color-primary, #6750a4));
-  --_focus-label-text-color: var(--md-text-button-focus-label-text-color, var(--md-sys-color-primary, #6750a4));
-  --_pressed-label-text-color: var(--md-text-button-pressed-label-text-color, var(--md-sys-color-primary, #6750a4));
-  --_hover-state-layer-color: var(--md-text-button-hover-state-layer-color, var(--md-sys-color-primary, #6750a4));
-  --_pressed-state-layer-color: var(--md-text-button-pressed-state-layer-color, var(--md-sys-color-primary, #6750a4));
-  --_disabled-label-text-color: var(--md-text-button-disabled-label-text-color, var(--md-sys-color-on-surface, #1c1b1f));
-  --_icon-color: var(--md-text-button-icon-color, var(--md-sys-color-primary, #6750a4));
-  --_hover-icon-color: var(--md-text-button-hover-icon-color, var(--md-sys-color-primary, #6750a4));
-  --_focus-icon-color: var(--md-text-button-focus-icon-color, var(--md-sys-color-primary, #6750a4));
-  --_pressed-icon-color: var(--md-text-button-pressed-icon-color, var(--md-sys-color-primary, #6750a4));
-  --_disabled-icon-color: var(--md-text-button-disabled-icon-color, var(--md-sys-color-on-surface, #1c1b1f));
-  --_leading-space: 12px;
-  --_trailing-space: 12px;
-  --_with-leading-icon-leading-space: 12px;
-  --_with-leading-icon-trailing-space: 16px;
-  --_with-trailing-icon-leading-space: 16px;
-  --_with-trailing-icon-trailing-space: 12px;
+  background-color: transparent;
+  color: var(--md-sys-color-primary, #6750a4);
+  padding: 0 12px;
 }
 
-.text .background {
-  background: transparent;
+.text .stateLayer {
+  background-color: var(--md-sys-color-primary, #6750a4);
 }
 
-/* Elevated Button (For patterned backgrounds) */
+/* ==========================================================================
+   ELEVATED VARIANT
+   ========================================================================== */
+
 .elevated {
-  --_container-color: var(--md-elevated-button-container-color, var(--md-sys-color-surface-container-low, #f7f2fa));
-  --_label-text-color: var(--md-elevated-button-label-text-color, var(--md-sys-color-primary, #6750a4));
-  --_hover-label-text-color: var(--md-elevated-button-hover-label-text-color, var(--md-sys-color-primary, #6750a4));
-  --_focus-label-text-color: var(--md-elevated-button-focus-label-text-color, var(--md-sys-color-primary, #6750a4));
-  --_pressed-label-text-color: var(--md-elevated-button-pressed-label-text-color, var(--md-sys-color-primary, #6750a4));
-  --_hover-state-layer-color: var(--md-elevated-button-hover-state-layer-color, var(--md-sys-color-primary, #6750a4));
-  --_pressed-state-layer-color: var(--md-elevated-button-pressed-state-layer-color, var(--md-sys-color-primary, #6750a4));
-  --_disabled-container-color: var(--md-elevated-button-disabled-container-color, var(--md-sys-color-on-surface, #1c1b1f));
-  --_disabled-label-text-color: var(--md-elevated-button-disabled-label-text-color, var(--md-sys-color-on-surface, #1c1b1f));
-  --_icon-color: var(--md-elevated-button-icon-color, var(--md-sys-color-primary, #6750a4));
-  --_hover-icon-color: var(--md-elevated-button-hover-icon-color, var(--md-sys-color-primary, #6750a4));
-  --_focus-icon-color: var(--md-elevated-button-focus-icon-color, var(--md-sys-color-primary, #6750a4));
-  --_pressed-icon-color: var(--md-elevated-button-pressed-icon-color, var(--md-sys-color-primary, #6750a4));
-  --_disabled-icon-color: var(--md-elevated-button-disabled-icon-color, var(--md-sys-color-on-surface, #1c1b1f));
+  background-color: var(--md-sys-color-surface-container-low, #f7f2fa);
+  color: var(--md-sys-color-primary, #6750a4);
+  box-shadow: var(--md-sys-elevation-1, 
+    0 1px 3px 1px rgba(0,0,0,0.15), 
+    0 1px 2px rgba(0,0,0,0.3));
 }
 
-/* Tonal Button (Filled Tonal - Secondary Container) */
+.elevated .stateLayer {
+  background-color: var(--md-sys-color-primary, #6750a4);
+}
+
+.elevated:hover {
+  box-shadow: var(--md-sys-elevation-2, 
+    0 2px 6px 2px rgba(0,0,0,0.15), 
+    0 1px 2px rgba(0,0,0,0.3));
+}
+
+/* ==========================================================================
+   TONAL VARIANT
+   ========================================================================== */
+
 .tonal {
-  --_container-color: var(--md-filled-tonal-button-container-color, var(--md-sys-color-secondary-container, #e8def8));
-  --_label-text-color: var(--md-filled-tonal-button-label-text-color, var(--md-sys-color-on-secondary-container, #1d192b));
-  --_hover-label-text-color: var(--md-filled-tonal-button-hover-label-text-color, var(--md-sys-color-on-secondary-container, #1d192b));
-  --_focus-label-text-color: var(--md-filled-tonal-button-focus-label-text-color, var(--md-sys-color-on-secondary-container, #1d192b));
-  --_pressed-label-text-color: var(--md-filled-tonal-button-pressed-label-text-color, var(--md-sys-color-on-secondary-container, #1d192b));
-  --_hover-state-layer-color: var(--md-filled-tonal-button-hover-state-layer-color, var(--md-sys-color-on-secondary-container, #1d192b));
-  --_pressed-state-layer-color: var(--md-filled-tonal-button-pressed-state-layer-color, var(--md-sys-color-on-secondary-container, #1d192b));
-  --_disabled-container-color: var(--md-filled-tonal-button-disabled-container-color, var(--md-sys-color-on-surface, #1c1b1f));
-  --_disabled-label-text-color: var(--md-filled-tonal-button-disabled-label-text-color, var(--md-sys-color-on-surface, #1c1b1f));
-  --_icon-color: var(--md-filled-tonal-button-icon-color, var(--md-sys-color-on-secondary-container, #1d192b));
-  --_hover-icon-color: var(--md-filled-tonal-button-hover-icon-color, var(--md-sys-color-on-secondary-container, #1d192b));
-  --_focus-icon-color: var(--md-filled-tonal-button-focus-icon-color, var(--md-sys-color-on-secondary-container, #1d192b));
-  --_pressed-icon-color: var(--md-filled-tonal-button-pressed-icon-color, var(--md-sys-color-on-secondary-container, #1d192b));
-  --_disabled-icon-color: var(--md-filled-tonal-button-disabled-icon-color, var(--md-sys-color-on-surface, #1c1b1f));
+  background-color: var(--md-sys-color-secondary-container, #e8def8);
+  color: var(--md-sys-color-on-secondary-container, #1d192b);
 }
 
+.tonal .stateLayer {
+  background-color: var(--md-sys-color-on-secondary-container, #1d192b);
+}
 
+.tonal:hover {
+  box-shadow: var(--md-sys-elevation-1, 
+    0 1px 3px 1px rgba(0,0,0,0.15), 
+    0 1px 2px rgba(0,0,0,0.3));
+}
+
+/* ==========================================================================
+   DISABLED STATE
+   ========================================================================== */
+
+.disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+  background-color: color-mix(in srgb, var(--md-sys-color-on-surface, #1d1b20) 12%, transparent) !important;
+  color: color-mix(in srgb, var(--md-sys-color-on-surface, #1d1b20) 38%, transparent) !important;
+  box-shadow: none !important;
+  border-color: transparent !important;
+}
+
+.disabled .stateLayer {
+  display: none;
+}
+
+/* ==========================================================================
+   DARK THEME OVERRIDES
+   ========================================================================== */
+
+@media (prefers-color-scheme: dark) {
+  .filled {
+    background-color: var(--md-sys-color-primary, #d0bcff);
+    color: var(--md-sys-color-on-primary, #381e72);
+  }
+  
+  .outlined {
+    color: var(--md-sys-color-primary, #d0bcff);
+    border-color: var(--md-sys-color-outline, #938f99);
+  }
+  
+  .text {
+    color: var(--md-sys-color-primary, #d0bcff);
+  }
+  
+  .elevated {
+    background-color: var(--md-sys-color-surface-container-low, #1d1b20);
+    color: var(--md-sys-color-primary, #d0bcff);
+  }
+  
+  .tonal {
+    background-color: var(--md-sys-color-secondary-container, #4a4458);
+    color: var(--md-sys-color-on-secondary-container, #e8def8);
+  }
+}
+
+[data-theme="dark"] .filled {
+  background-color: var(--md-sys-color-primary, #d0bcff);
+  color: var(--md-sys-color-on-primary, #381e72);
+}
+
+[data-theme="dark"] .outlined {
+  color: var(--md-sys-color-primary, #d0bcff);
+  border-color: var(--md-sys-color-outline, #938f99);
+}
+
+[data-theme="dark"] .text {
+  color: var(--md-sys-color-primary, #d0bcff);
+}
+
+[data-theme="dark"] .elevated {
+  background-color: var(--md-sys-color-surface-container-low, #1d1b20);
+  color: var(--md-sys-color-primary, #d0bcff);
+}
+
+[data-theme="dark"] .tonal {
+  background-color: var(--md-sys-color-secondary-container, #4a4458);
+  color: var(--md-sys-color-on-secondary-container, #e8def8);
+}

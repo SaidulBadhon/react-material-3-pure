@@ -72,6 +72,11 @@ const meta: Meta<typeof Checkbox> = {
 export default meta;
 type Story = StoryObj<typeof Checkbox>;
 
+// Default args for accessibility
+const defaultArgs = {
+  'aria-label': 'Checkbox',
+};
+
 /* ==========================================================================
    BASIC STATES
    ========================================================================== */
@@ -83,6 +88,7 @@ type Story = StoryObj<typeof Checkbox>;
  */
 export const Unchecked: Story = {
   args: {
+    ...defaultArgs,
     checked: false,
   },
 };
@@ -94,6 +100,7 @@ export const Unchecked: Story = {
  */
 export const Checked: Story = {
   args: {
+    ...defaultArgs,
     checked: true,
   },
 };
@@ -106,6 +113,7 @@ export const Checked: Story = {
  */
 export const Indeterminate: Story = {
   args: {
+    ...defaultArgs,
     indeterminate: true,
   },
 };
@@ -117,6 +125,7 @@ export const Indeterminate: Story = {
  */
 export const DisabledUnchecked: Story = {
   args: {
+    ...defaultArgs,
     disabled: true,
     checked: false,
   },
@@ -129,6 +138,7 @@ export const DisabledUnchecked: Story = {
  */
 export const DisabledChecked: Story = {
   args: {
+    ...defaultArgs,
     disabled: true,
     checked: true,
   },
@@ -141,6 +151,7 @@ export const DisabledChecked: Story = {
  */
 export const DisabledIndeterminate: Story = {
   args: {
+    ...defaultArgs,
     disabled: true,
     indeterminate: true,
   },
@@ -360,7 +371,7 @@ export const FormIntegration: Story = {
             aria-label="Accept terms and conditions (required)"
           />
           <span>
-            I accept the terms and conditions <span style={{ color: '#b3261e' }}>*</span>
+            I accept the terms and conditions <span style={{ color: '#f2b8b5' }}>*</span>
           </span>
         </div>
 
@@ -395,6 +406,7 @@ export const FormIntegration: Story = {
  */
 export const WithAriaLabel: Story = {
   args: {
+    ...defaultArgs,
     'aria-label': 'Toggle notification settings',
     checked: false,
   },
@@ -522,16 +534,20 @@ export const ErrorState: Story = {
             display: 'flex',
             alignItems: 'center',
             gap: '8px',
-            '--md-checkbox-outline-color': '#b3261e',
+            '--md-checkbox-outline-color': '#f2b8b5',
           } as React.CSSProperties
         }
       >
-        <Checkbox aria-invalid="true" aria-describedby="error-text" />
+        <Checkbox 
+          aria-label="Accept terms"
+          aria-invalid="true" 
+          aria-describedby="error-text" 
+        />
         <span style={{ fontSize: '14px' }}>Accept terms</span>
       </div>
       <span
         id="error-text"
-        style={{ color: '#b3261e', fontSize: '12px', marginLeft: '40px' }}
+        style={{ color: '#f2b8b5', fontSize: '12px', marginLeft: '40px' }}
       >
         You must accept the terms to continue
       </span>

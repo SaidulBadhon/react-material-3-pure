@@ -1,10 +1,11 @@
+'use client';
+
 import { useRef, useCallback, useState } from 'react';
 
 /**
  * Material Design 3 Ripple Hook
  *
- * A React port of the official @material/web ripple component.
- * Uses CSS animations with ::after pseudo-element for the press effect.
+ * SSR-safe ripple effect hook using CSS animations.
  *
  * @see https://github.com/material-components/material-web/blob/main/ripple/internal/ripple.ts
  */
@@ -18,9 +19,6 @@ const SOFT_EDGE_CONTAINER_RATIO = 0.35;
 const TOUCH_DELAY_MS = 150;
 const EASING_STANDARD = 'cubic-bezier(0.2, 0, 0, 1)';
 
-/**
- * Interaction states for the ripple.
- */
 const State = {
   INACTIVE: 0,
   TOUCH_DELAY: 1,
@@ -44,13 +42,16 @@ export interface RippleHandlers {
   onClick: (event: React.MouseEvent<HTMLElement>) => void;
 }
 
-export function useRipple(disabled: boolean = false) {
+// SSR-safe window check
+const isBrowser = typeof window !== 'undefined';
+
+export function useRipple<T extends HTMLElement = HTMLElement>(disabled: boolean = false) {
   const [hovered, setHovered] = useState(false);
   const [pressed, setPressed] = useState(false);
 
   const stateRef = useRef<StateType>(State.INACTIVE);
   const rippleStartEventRef = useRef<React.PointerEvent<HTMLElement> | null>(null);
-  const surfaceRef = useRef<HTMLDivElement | null>(null);
+  const surfaceRef = useRef<T | null>(null);
   const growAnimationRef = useRef<Animation | null>(null);
   const initialSizeRef = useRef(0);
   const rippleSizeRef = useRef('');
@@ -99,6 +100,8 @@ export function useRipple(disabled: boolean = false) {
 
   const getNormalizedPointerEventCoords = useCallback(
     (element: HTMLElement, event: React.PointerEvent<HTMLElement>) => {
+      if (!isBrowser) return { x: 0, y: 0 };
+      
       const { scrollX, scrollY } = window;
       const { left, top } = element.getBoundingClientRect();
       const documentX = scrollX + left;
@@ -115,7 +118,6 @@ export function useRipple(disabled: boolean = false) {
   const getTranslationCoordinates = useCallback(
     (element: HTMLElement, event?: React.PointerEvent<HTMLElement>) => {
       const { height, width } = element.getBoundingClientRect();
-      // End in the center
       const endPoint = {
         x: (width - initialSizeRef.current) / 2,
         y: (height - initialSizeRef.current) / 2,
@@ -131,7 +133,6 @@ export function useRipple(disabled: boolean = false) {
         };
       }
 
-      // Center around start point
       startPoint = {
         x: startPoint.x - initialSizeRef.current / 2,
         y: startPoint.y - initialSizeRef.current / 2,
@@ -143,17 +144,17 @@ export function useRipple(disabled: boolean = false) {
   );
 
   const startPressAnimation = useCallback(
-    (element: HTMLElement, event?: React.PointerEvent<HTMLElement>) => {
+    (event?: React.PointerEvent<HTMLElement>) => {
+      if (!isBrowser) return;
+      
       const surface = surfaceRef.current;
-      if (!surface) {
-        return;
-      }
+      if (!surface) return;
 
       setPressed(true);
       growAnimationRef.current?.cancel();
-      determineRippleSize(element);
+      determineRippleSize(surface);
 
-      const { startPoint, endPoint } = getTranslationCoordinates(element, event);
+      const { startPoint, endPoint } = getTranslationCoordinates(surface, event);
       const translateStart = `${startPoint.x}px, ${startPoint.y}px`;
       const translateEnd = `${endPoint.x}px, ${endPoint.y}px`;
 
@@ -199,7 +200,6 @@ export function useRipple(disabled: boolean = false) {
     });
 
     if (growAnimationRef.current !== animation) {
-      // A new press animation was started
       return;
     }
 
@@ -208,9 +208,7 @@ export function useRipple(disabled: boolean = false) {
 
   const onPointerEnter = useCallback(
     (event: React.PointerEvent<HTMLElement>) => {
-      if (!shouldReactToEvent(event)) {
-        return;
-      }
+      if (!shouldReactToEvent(event)) return;
       setHovered(true);
     },
     [shouldReactToEvent]
@@ -218,9 +216,7 @@ export function useRipple(disabled: boolean = false) {
 
   const onPointerLeave = useCallback(
     (event: React.PointerEvent<HTMLElement>) => {
-      if (!shouldReactToEvent(event)) {
-        return;
-      }
+      if (!shouldReactToEvent(event)) return;
       setHovered(false);
 
       if (stateRef.current !== State.INACTIVE) {
@@ -232,9 +228,7 @@ export function useRipple(disabled: boolean = false) {
 
   const onPointerUp = useCallback(
     (event: React.PointerEvent<HTMLElement>) => {
-      if (!shouldReactToEvent(event)) {
-        return;
-      }
+      if (!shouldReactToEvent(event)) return;
 
       if (stateRef.current === State.HOLDING) {
         stateRef.current = State.WAITING_FOR_CLICK;
@@ -243,7 +237,7 @@ export function useRipple(disabled: boolean = false) {
 
       if (stateRef.current === State.TOUCH_DELAY) {
         stateRef.current = State.WAITING_FOR_CLICK;
-        startPressAnimation(event.currentTarget.parentElement || event.currentTarget, rippleStartEventRef.current || undefined);
+        startPressAnimation(rippleStartEventRef.current || undefined);
         return;
       }
     },
@@ -252,67 +246,54 @@ export function useRipple(disabled: boolean = false) {
 
   const onPointerDown = useCallback(
     async (event: React.PointerEvent<HTMLElement>) => {
-      if (!shouldReactToEvent(event)) {
-        return;
-      }
+      if (!shouldReactToEvent(event)) return;
 
       rippleStartEventRef.current = event;
-      // surfaceRef is already attached via ref prop, no need to query
       
       if (!isTouch(event)) {
         stateRef.current = State.WAITING_FOR_CLICK;
-        startPressAnimation(event.currentTarget.parentElement || event.currentTarget, event);
+        startPressAnimation(event);
         return;
       }
 
-      // Touch: wait for a hold after touch delay
       stateRef.current = State.TOUCH_DELAY;
       await new Promise((resolve) => {
         setTimeout(resolve, TOUCH_DELAY_MS);
       });
 
-      if (stateRef.current !== State.TOUCH_DELAY) {
-        return;
-      }
+      if (stateRef.current !== State.TOUCH_DELAY) return;
 
       stateRef.current = State.HOLDING;
-      startPressAnimation(event.currentTarget.parentElement || event.currentTarget, event);
+      startPressAnimation(event);
     },
     [shouldReactToEvent, isTouch, startPressAnimation]
   );
 
   const onPointerCancel = useCallback(
     (event: React.PointerEvent<HTMLElement>) => {
-      if (!shouldReactToEvent(event)) {
-        return;
-      }
+      if (!shouldReactToEvent(event)) return;
       endPressAnimation();
     },
     [shouldReactToEvent, endPressAnimation]
   );
 
-  const onClick = useCallback(() => {
-    if (disabled) {
-      return;
-    }
+  const onClick = useCallback(
+    (_event: React.MouseEvent<HTMLElement>) => {
+      if (disabled) return;
 
-    if (stateRef.current === State.WAITING_FOR_CLICK) {
-      endPressAnimation();
-      return;
-    }
-
-    if (stateRef.current === State.INACTIVE) {
-      // Keyboard synthesized click event
-      const activeElement = document.activeElement as HTMLElement;
-      if (activeElement && surfaceRef.current) {
-        const element = activeElement.parentElement;
-        if (element) {
-          startPressAnimation(element);
-          endPressAnimation();
-        }
+      if (stateRef.current === State.WAITING_FOR_CLICK) {
+        endPressAnimation();
+        return;
       }
-    }
-  }, [disabled, startPressAnimation, endPressAnimation]);
+
+      if (stateRef.current === State.INACTIVE) {
+        // Keyboard synthesized click - start from center
+        startPressAnimation();
+        endPressAnimation();
+      }
+    },
+    [disabled, startPressAnimation, endPressAnimation]
+  );
 
   const handlers: RippleHandlers = {
     onPointerEnter,

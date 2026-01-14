@@ -26,6 +26,94 @@
       "styles": ["theme"],
       "docs": "https://m3.material.io/components/buttons",
       "source": "https://github.com/material-components/material-web/tree/main/button"
+    },
+    "checkbox": {
+      "name": "Checkbox",
+      "description": "M3 Checkbox with checked, unchecked, and indeterminate states",
+      "version": "0.1.0",
+      "files": [
+        {
+          "name": "checkbox.tsx",
+          "path": "components/Checkbox/Checkbox.tsx",
+          "type": "component"
+        },
+        {
+          "name": "checkbox.module.css",
+          "path": "components/Checkbox/Checkbox.module.css",
+          "type": "style"
+        }
+      ],
+      "dependencies": [],
+      "hooks": ["useRipple"],
+      "styles": ["theme"],
+      "docs": "https://m3.material.io/components/checkbox",
+      "source": "https://github.com/material-components/material-web/tree/main/checkbox"
+    },
+    "chip": {
+      "name": "Chip",
+      "description": "M3 Chips with 4 variants (AssistChip, FilterChip, InputChip, SuggestionChip) and ChipSet container",
+      "version": "0.1.0",
+      "files": [
+        {
+          "name": "chip.tsx",
+          "path": "components/Chip/Chip.tsx",
+          "type": "component"
+        },
+        {
+          "name": "chip.module.css",
+          "path": "components/Chip/Chip.module.css",
+          "type": "style"
+        }
+      ],
+      "dependencies": [],
+      "hooks": ["useRipple"],
+      "styles": ["theme"],
+      "docs": "https://m3.material.io/components/chips",
+      "source": "https://github.com/material-components/material-web/tree/main/chips"
+    },
+    "dialog": {
+      "name": "Dialog",
+      "description": "M3 Dialog with modal behavior, focus trapping, and open/close animations",
+      "version": "0.1.0",
+      "files": [
+        {
+          "name": "dialog.tsx",
+          "path": "components/Dialog/Dialog.tsx",
+          "type": "component"
+        },
+        {
+          "name": "dialog.module.css",
+          "path": "components/Dialog/Dialog.module.css",
+          "type": "style"
+        }
+      ],
+      "dependencies": [],
+      "hooks": [],
+      "styles": ["theme"],
+      "docs": "https://m3.material.io/components/dialogs",
+      "source": "https://github.com/material-components/material-web/tree/main/dialog"
+    },
+    "divider": {
+      "name": "Divider",
+      "description": "M3 Divider with inset variants for lists and containers",
+      "version": "0.1.0",
+      "files": [
+        {
+          "name": "divider.tsx",
+          "path": "components/Divider/Divider.tsx",
+          "type": "component"
+        },
+        {
+          "name": "divider.module.css",
+          "path": "components/Divider/Divider.module.css",
+          "type": "style"
+        }
+      ],
+      "dependencies": [],
+      "hooks": [],
+      "styles": ["theme"],
+      "docs": "https://m3.material.io/components/divider",
+      "source": "https://github.com/material-components/material-web/tree/main/divider"
     }
   },
   "hooks": {
