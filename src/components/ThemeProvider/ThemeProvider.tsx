@@ -108,8 +108,14 @@ function getStoredValue<T>(key: string, fallback: T): T {
   if (typeof window === 'undefined') return fallback;
   try {
     const stored = localStorage.getItem(key);
-    return stored ? (JSON.parse(stored) as T) : fallback;
+    if (!stored) return fallback;
+    return JSON.parse(stored) as T;
   } catch {
+    try {
+      localStorage.removeItem(key);
+    } catch {
+      // localStorage not available
+    }
     return fallback;
   }
 }

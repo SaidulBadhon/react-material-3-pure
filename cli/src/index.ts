@@ -6,19 +6,21 @@ import ora from 'ora';
 import prompts from 'prompts';
 import fs from 'fs-extra';
 import path from 'path';
-import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import {
+  COMPONENT_TEMPLATES,
+  HOOK_TEMPLATES,
+  STYLE_TEMPLATES,
+} from './templates/index.js';
 
-const VERSION = '0.1.0';
+const VERSION = '0.2.0';
 
 interface ComponentDefinition {
   name: string;
   description: string;
   files: {
-    source: string;
-    target: string;
+    name: string;
+    type: 'tsx' | 'css';
   }[];
   dependencies: string[];
   hooks?: string[];
@@ -30,74 +32,24 @@ const COMPONENTS_REGISTRY: Record<string, ComponentDefinition> = {
     name: 'Button',
     description: 'M3 Common Button with 5 variants (filled, outlined, text, elevated, tonal)',
     files: [
-      { source: 'components/Button/Button.tsx', target: 'button.tsx' },
-      { source: 'components/Button/Button.module.css', target: 'button.module.css' },
+      { name: 'button.tsx', type: 'tsx' },
+      { name: 'button.module.css', type: 'css' },
     ],
     dependencies: [],
     hooks: ['useRipple'],
-    styles: ['theme'],
-  },
-  checkbox: {
-    name: 'Checkbox',
-    description: 'M3 Checkbox with checked, unchecked, and indeterminate states',
-    files: [
-      { source: 'components/Checkbox/Checkbox.tsx', target: 'checkbox.tsx' },
-      { source: 'components/Checkbox/Checkbox.module.css', target: 'checkbox.module.css' },
-    ],
-    dependencies: [],
-    hooks: ['useRipple'],
-    styles: ['theme'],
-  },
-  chip: {
-    name: 'Chip',
-    description: 'M3 Chips (AssistChip, FilterChip, InputChip, SuggestionChip, ChipSet)',
-    files: [
-      { source: 'components/Chip/Chip.tsx', target: 'chip.tsx' },
-      { source: 'components/Chip/Chip.module.css', target: 'chip.module.css' },
-    ],
-    dependencies: [],
-    hooks: ['useRipple'],
-    styles: ['theme'],
-  },
-  dialog: {
-    name: 'Dialog',
-    description: 'M3 Dialog with modal behavior, focus trapping, and animations',
-    files: [
-      { source: 'components/Dialog/Dialog.tsx', target: 'dialog.tsx' },
-      { source: 'components/Dialog/Dialog.module.css', target: 'dialog.module.css' },
-    ],
-    dependencies: [],
-    hooks: [],
-    styles: ['theme'],
-  },
-  divider: {
-    name: 'Divider',
-    description: 'M3 Divider with inset variants for lists and containers',
-    files: [
-      { source: 'components/Divider/Divider.tsx', target: 'divider.tsx' },
-      { source: 'components/Divider/Divider.module.css', target: 'divider.module.css' },
-    ],
-    dependencies: [],
-    hooks: [],
     styles: ['theme'],
   },
 };
 
-const HOOKS_REGISTRY: Record<string, { source: string; target: string }> = {
+const HOOKS_REGISTRY: Record<string, { target: string }> = {
   useRipple: {
-    source: 'hooks/useRipple.ts',
     target: 'use-ripple.ts',
   },
 };
 
-const STYLES_REGISTRY: Record<string, { source: string; target: string }> = {
+const STYLES_REGISTRY: Record<string, { target: string }> = {
   theme: {
-    source: 'styles/theme.css',
     target: 'm3-theme.css',
-  },
-  global: {
-    source: 'styles/global.css',
-    target: 'm3-global.css',
   },
 };
 
@@ -136,27 +88,9 @@ async function saveConfig(config: M3Config): Promise<void> {
   await fs.writeJson(configPath, config, { spaces: 2 });
 }
 
-function getSourcePath(relativePath: string): string {
-  const rootDir = path.join(__dirname, '..', '..');
-  return path.join(rootDir, 'src', relativePath);
-}
-
-async function copyComponent(
-  sourcePath: string,
-  targetPath: string,
-  config: M3Config
-): Promise<void> {
+async function writeTemplate(targetPath: string, content: string): Promise<void> {
   const absoluteTarget = path.join(process.cwd(), targetPath);
   await fs.ensureDir(path.dirname(absoluteTarget));
-  
-  let content = await fs.readFile(sourcePath, 'utf-8');
-  
-  if (config.aliases) {
-    for (const [alias, replacement] of Object.entries(config.aliases)) {
-      content = content.replace(new RegExp(alias, 'g'), replacement);
-    }
-  }
-  
   await fs.writeFile(absoluteTarget, content);
 }
 
@@ -239,11 +173,8 @@ program
 
       await saveConfig(config);
 
-      const themeSource = getSourcePath('styles/theme.css');
-      const themeTarget = path.join(process.cwd(), config.stylesDir, 'm3-theme.css');
-      if (await fs.pathExists(themeSource)) {
-        await fs.copy(themeSource, themeTarget);
-      }
+      const themeTarget = path.join(config.stylesDir, 'm3-theme.css');
+      await writeTemplate(themeTarget, STYLE_TEMPLATES.theme.css);
 
       spinner.succeed(chalk.green('m3-pure initialized successfully!'));
       console.log('');
@@ -312,42 +243,35 @@ program
 
         spinner.text = `Adding ${component.name}...`;
 
+        const template = COMPONENT_TEMPLATES[componentName.toLowerCase()];
+        if (!template) {
+          console.log(chalk.yellow(`\n  No template for: ${componentName}`));
+          continue;
+        }
+
         for (const file of component.files) {
-          const sourcePath = getSourcePath(file.source);
-          const targetPath = path.join(config.componentsDir, file.target);
+          const targetPath = path.join(config.componentsDir, file.name);
+          const absoluteTarget = path.join(process.cwd(), targetPath);
 
-          console.log('DEBUG SOURCE:', sourcePath);
-          console.log('DEBUG EXISTS:', await fs.pathExists(sourcePath));
-          console.log('DEBUG TARGET:', targetPath);
-
-          if (await fs.pathExists(sourcePath)) {
-            const absoluteTarget = path.join(process.cwd(), targetPath);
-            
-            if ((await fs.pathExists(absoluteTarget)) && !options.overwrite) {
-              console.log(chalk.yellow(`\n  Skipping ${file.target} (already exists)`));
-              continue;
-            }
-
-            await copyComponent(sourcePath, targetPath, config);
-            console.log('DEBUG COPIED:', absoluteTarget);
-          } else {
-            console.log(chalk.red(`\n  Source not found: ${sourcePath}`));
+          if ((await fs.pathExists(absoluteTarget)) && !options.overwrite) {
+            console.log(chalk.yellow(`\n  Skipping ${file.name} (already exists)`));
+            continue;
           }
+
+          const content = file.type === 'tsx' ? template.tsx : template.css;
+          await writeTemplate(targetPath, content);
         }
 
         if (component.hooks) {
           for (const hookName of component.hooks) {
             if (addedHooks.has(hookName)) continue;
-            
-            const hook = HOOKS_REGISTRY[hookName];
-            if (hook) {
-              const sourcePath = getSourcePath(hook.source);
-              const targetPath = path.join(config.hooksDir, hook.target);
 
-              if (await fs.pathExists(sourcePath)) {
-                await copyComponent(sourcePath, targetPath, config);
-                addedHooks.add(hookName);
-              }
+            const hookDef = HOOKS_REGISTRY[hookName];
+            const hookTemplate = HOOK_TEMPLATES[hookName];
+            if (hookDef && hookTemplate) {
+              const targetPath = path.join(config.hooksDir, hookDef.target);
+              await writeTemplate(targetPath, hookTemplate.code);
+              addedHooks.add(hookName);
             }
           }
         }
@@ -355,16 +279,13 @@ program
         if (component.styles) {
           for (const styleName of component.styles) {
             if (addedStyles.has(styleName)) continue;
-            
-            const style = STYLES_REGISTRY[styleName];
-            if (style) {
-              const sourcePath = getSourcePath(style.source);
-              const targetPath = path.join(config.stylesDir, style.target);
 
-              if (await fs.pathExists(sourcePath)) {
-                await copyComponent(sourcePath, targetPath, config);
-                addedStyles.add(styleName);
-              }
+            const styleDef = STYLES_REGISTRY[styleName];
+            const styleTemplate = STYLE_TEMPLATES[styleName];
+            if (styleDef && styleTemplate) {
+              const targetPath = path.join(config.stylesDir, styleDef.target);
+              await writeTemplate(targetPath, styleTemplate.css);
+              addedStyles.add(styleName);
             }
           }
         }
@@ -378,7 +299,7 @@ program
         const component = COMPONENTS_REGISTRY[componentName.toLowerCase()];
         if (component) {
           for (const file of component.files) {
-            console.log(chalk.dim(`  - ${path.join(config.componentsDir, file.target)}`));
+            console.log(chalk.dim(`  - ${path.join(config.componentsDir, file.name)}`));
           }
         }
       }
@@ -419,51 +340,6 @@ program
 
     console.log('');
     console.log(chalk.dim('Add a component with: npx m3-pure add <component>'));
-    console.log('');
-  });
-
-program
-  .command('diff [component]')
-  .description('Show differences between local and registry components')
-  .action(async (componentName: string) => {
-    const config = await loadConfig();
-    if (!config) {
-      console.log(chalk.red('No m3-pure.json found. Run `npx m3-pure init` first.'));
-      process.exit(1);
-    }
-
-    const component = COMPONENTS_REGISTRY[componentName?.toLowerCase()];
-    if (!component) {
-      console.log(chalk.yellow(`Unknown component: ${componentName}`));
-      console.log('Run `npx m3-pure list` to see available components.');
-      process.exit(1);
-    }
-
-    console.log(chalk.bold(`\nChecking ${component.name} for differences...\n`));
-
-    for (const file of component.files) {
-      const sourcePath = getSourcePath(file.source);
-      const targetPath = path.join(process.cwd(), config.componentsDir, file.target);
-
-      const sourceExists = await fs.pathExists(sourcePath);
-      const targetExists = await fs.pathExists(targetPath);
-
-      if (!targetExists) {
-        console.log(chalk.yellow(`  ⊘ ${file.target} - Not installed`));
-      } else if (!sourceExists) {
-        console.log(chalk.red(`  ✗ ${file.target} - Source not found`));
-      } else {
-        const sourceContent = await fs.readFile(sourcePath, 'utf-8');
-        const targetContent = await fs.readFile(targetPath, 'utf-8');
-
-        if (sourceContent === targetContent) {
-          console.log(chalk.green(`  ✓ ${file.target} - Up to date`));
-        } else {
-          console.log(chalk.cyan(`  ≠ ${file.target} - Has local changes`));
-        }
-      }
-    }
-
     console.log('');
   });
 

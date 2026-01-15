@@ -44,10 +44,6 @@
     "url": "https://github.com/user/react-material-3-pure.git"
   },
   "files": [
-    "dist",
-    "src",
-    "../../src/components",
-    "../../src/hooks",
-    "../../src/styles"
+    "dist"
   ]
 }
